@@ -78,6 +78,53 @@ class CustomerControllerTest {
 	}
 
 	@Test
+	void createsCustomerWithOptionalAddressesAndPaymentMethods() throws Exception {
+		mockMvc.perform(post("/api/customers")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{
+						  "customerCode": "CUST-004",
+						  "firstName": "Katherine",
+						  "lastName": "Johnson",
+						  "email": "katherine.full@example.com",
+						  "car": [{
+						    "addressType": "HOME",
+						    "street": "123 Main Street",
+						    "postalCode": "1000-001",
+						    "city": "Lisbon",
+						    "country": "Portugal",
+						    "isDefault": true
+						  }],
+						  "cpmr": [{
+						    "paymentType": "CREDIT_CARD",
+						    "cardHolder": "Katherine Johnson",
+						    "cardLastDigits": "1234",
+						    "expiryMonth": 12,
+						    "expiryYear": 2030,
+						    "isDefault": true
+						  }]
+						}
+						"""))
+				.andExpect(status().isCreated());
+
+		Long customerId = customerRepository.findAll().get(0).getId();
+		org.junit.jupiter.api.Assertions.assertEquals(1, customerAddressRepository.count());
+		org.junit.jupiter.api.Assertions.assertEquals(1, customerPaymentMethodRepository.count());
+		org.junit.jupiter.api.Assertions.assertEquals(customerId,
+				customerAddressRepository.findAll().get(0).getCustomer().getId());
+		org.junit.jupiter.api.Assertions.assertEquals(customerId,
+				customerPaymentMethodRepository.findAll().get(0).getCustomer().getId());
+
+		mockMvc.perform(get("/api/customers/{id}", customerId))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.email").value("katherine.full@example.com"))
+				.andExpect(jsonPath("$.addresses.length()").value(1))
+				.andExpect(jsonPath("$.addresses[0].street").value("123 Main Street"))
+				.andExpect(jsonPath("$.paymentMethods.length()").value(1))
+				.andExpect(jsonPath("$.paymentMethods[0].cardLastDigits").value("1234"));
+	}
+
+	@Test
 	void rejectsInvalidCustomerData() throws Exception {
 		mockMvc.perform(post("/api/customers")
 				.contentType(MediaType.APPLICATION_JSON)

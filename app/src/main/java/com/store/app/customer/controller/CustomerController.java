@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.store.app.customer.dto.CustomerAddressRequest;
 import com.store.app.customer.dto.CustomerAddressResponse;
+import com.store.app.customer.dto.CustomerDetailsResponseDto;
 import com.store.app.customer.dto.CustomerPaymentMethodRequest;
 import com.store.app.customer.dto.CustomerPaymentMethodResponse;
 import com.store.app.customer.dto.CustomerRequestDto;
@@ -51,7 +52,7 @@ public class CustomerController {
 	}
 
 	@GetMapping("/{id}")
-	public CustomerResponseDto findById(@PathVariable Long id) {
+	public CustomerDetailsResponseDto findById(@PathVariable Long id) {
 		return customerService.findById(id);
 	}
 
