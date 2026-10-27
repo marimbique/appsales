@@ -1,11 +1,15 @@
 package com.store.app.customer.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 
+@Data
 public class CustomerRequestDto {
 
 	@NotBlank
@@ -33,62 +37,8 @@ public class CustomerRequestDto {
 
 	private LocalDate birthDate;
 
-	public CustomerRequestDto() {
-	}
+	private List<@Valid CustomerPaymentMethodRequest> cpmr;
 
-	public String getCustomerCode() {
-		return customerCode;
-	}
+	private List<@Valid CustomerAddressRequest> car;
 
-	public void setCustomerCode(String customerCode) {
-		this.customerCode = customerCode;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	public String getTaxNumber() {
-		return taxNumber;
-	}
-
-	public void setTaxNumber(String taxNumber) {
-		this.taxNumber = taxNumber;
-	}
-
-	public LocalDate getBirthDate() {
-		return birthDate;
-	}
-
-	public void setBirthDate(LocalDate birthDate) {
-		this.birthDate = birthDate;
-	}
 }

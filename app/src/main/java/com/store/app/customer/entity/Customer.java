@@ -2,15 +2,20 @@ package com.store.app.customer.entity;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,7 +23,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "customers")
-@Getter
+@Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Customer {
 
@@ -48,7 +53,7 @@ public class Customer {
 	private LocalDate birthDate;
 
 	@Column(nullable = false)
-	private boolean active = true;
+	private final boolean active = true;
 
 	@CreationTimestamp
 	@Column(name = "created_at", nullable = false, updatable = false)
@@ -57,6 +62,12 @@ public class Customer {
 	@UpdateTimestamp
 	@Column(name = "updated_at", nullable = false)
 	private Instant updatedAt;
+
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CustomerAddress> addresses = new ArrayList<>();
+
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CustomerPaymentMethod> paymentMethods = new ArrayList<>();
 
 	public Customer(String customerCode, String firstName, String lastName, String email,
 			String phone, String taxNumber, LocalDate birthDate) {
@@ -67,5 +78,13 @@ public class Customer {
 		this.phone = phone;
 		this.taxNumber = taxNumber;
 		this.birthDate = birthDate;
+	}
+
+	public void addAddress(CustomerAddress address) {
+		addresses.add(address);
+	}
+
+	public void addPaymentMethod(CustomerPaymentMethod paymentMethod) {
+		paymentMethods.add(paymentMethod);
 	}
 }
