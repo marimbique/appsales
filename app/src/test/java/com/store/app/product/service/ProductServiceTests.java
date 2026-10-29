@@ -1,7 +1,7 @@
 package com.store.app.product.service;
 
+import static com.store.app.common.TestAssertions.assertStatus;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.store.app.product.dto.ProductRequest;
 import com.store.app.product.dto.ProductResponse;
@@ -199,11 +197,6 @@ class ProductServiceTests {
 
 		assertStatus(() -> service.delete(1L), HttpStatus.NOT_FOUND);
 		verify(productRepository, never()).delete(any(Product.class));
-	}
-
-	private static void assertStatus(ThrowingCallable call, HttpStatus expected) {
-		assertThatThrownBy(call).isInstanceOfSatisfying(ResponseStatusException.class,
-				ex -> assertThat(ex.getStatusCode()).isEqualTo(expected));
 	}
 
 	private static ProductRequest request(String sku, Long originId) {
